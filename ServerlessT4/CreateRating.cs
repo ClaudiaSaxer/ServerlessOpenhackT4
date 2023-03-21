@@ -17,9 +17,6 @@ namespace Z.CreateRating
     public class CreateRating
     {
         private readonly ILogger<CreateRating> _logger;
-        public CosmosClient cosmosClient;
-        public Database database;
-        public Container container;
         public CreateRating(ILogger<CreateRating> log)
         {
             _logger = log;
@@ -32,9 +29,10 @@ namespace Z.CreateRating
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             [CosmosDB(
-        databaseName: "my-database",
-        collectionName: "my-container",
-        ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOuts)
+        databaseName: "BFYOC",
+        containerName: "%my-container%",
+        Connection  = "CosmosDbConnectionString"
+       )]IAsyncCollector<dynamic> ratings)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -50,14 +48,11 @@ namespace Z.CreateRating
                 rating: data.Rating,
                 userNotes: data.UserNotes);
 
-            var options = new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway };
-            cosmosClient = new CosmosClient(EndpointUri, PrimaryKey, options);
-            database = cosmosClient.GetDatabase("Data");
-            container = database.GetContainer("Locations");
-
-            ItemResponse<Rating> loc_response = await container.CreateItemAsync<Rating>(
-                item, new PartitionKey(item.ratingId));
-
+            if (!string.IsNullOrEmpty(item.userId))
+            {
+                // Add a JSON document to the output container.
+                await ratings.AddAsync(item);
+            }
 
             string responseMessage = data?.UserId == System.Guid.Empty
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a zpersonalized response."
