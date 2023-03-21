@@ -35,7 +35,7 @@ namespace Z.GetRating
         databaseName: "BFYOC",
         containerName: "Ratings",
         Connection  = "CosmosDbConnectionString",
-        SqlQuery = "Select * from Ratings r where r.id = {ratingId}"
+        SqlQuery = "Select * from r where r.id = {ratingId}"
        )]IEnumerable<Rating> ratings)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
