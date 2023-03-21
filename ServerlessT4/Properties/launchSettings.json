@@ -2,7 +2,7 @@
   "profiles": {
     "ServerlessT4": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7258",
+      "commandLineArgs": "--port 7173",
       "launchBrowser": false
     }
   }
