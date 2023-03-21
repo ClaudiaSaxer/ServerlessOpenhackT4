@@ -23,6 +23,7 @@ on:
   push:
     branches:
     - 'main'
+    - 'cicd'
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'func-hack4-c2'   # set this to your function app name on Azure
