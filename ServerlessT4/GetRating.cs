@@ -30,22 +30,24 @@ namespace Z.GetRating
         [OpenApiParameter(name: "ratingId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **ratingId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetRating/{ratingId}")] HttpRequest req,
             [CosmosDB(
         databaseName: "BFYOC",
         containerName: "Ratings",
         Connection  = "CosmosDbConnectionString",
-        SqlQuery = "Select * from ratings r where r.id = {ratingId}"
-       )]IEnumerable<Rating> rating)
+        SqlQuery = "Select * from Ratings r where r.id = {ratingId}"
+       )]IEnumerable<Rating> ratings)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var result = rating.FirstOrDefault();
+            var result = ratings.FirstOrDefault();
 
-            string responseMessage = "This HTTP triggered function executed successfully. Pass a ratingId in the query string or in the request body for a personalized response.";
-
-            if (result==null)
+            if (result == null)
+            {
+                string ratingId = req.Query["ratingId"];
+                string responseMessage = $"No data was found for ratingId: {ratingId}";
                 return new OkObjectResult(responseMessage);
+            }
 
             return new OkObjectResult(result);
         }
