@@ -40,12 +40,11 @@ namespace Z.GetRating
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string ratingId = req.Query["ratingId"];
             var result = rating.FirstOrDefault();
 
             string responseMessage = "This HTTP triggered function executed successfully. Pass a ratingId in the query string or in the request body for a personalized response.";
 
-            if (string.IsNullOrEmpty(ratingId))
+            if (result==null)
                 return new OkObjectResult(responseMessage);
 
             return new OkObjectResult(result);
