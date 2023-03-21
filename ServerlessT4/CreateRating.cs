@@ -30,7 +30,11 @@ namespace Z.CreateRating
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "json", bodyType: typeof(System.Text.Json.JsonDocument), Description = "Parameters", Example = typeof(CreateRatingDto))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [CosmosDB(
+        databaseName: "my-database",
+        collectionName: "my-container",
+        ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOuts)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
