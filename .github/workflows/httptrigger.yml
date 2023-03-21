@@ -19,6 +19,7 @@
 name: Deploy HttpTrigger function
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - 'main'
