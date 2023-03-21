@@ -21,7 +21,7 @@ name: Deploy HttpTrigger function
 on:
   push:
     branches:
-    - ["main"]
+    - 'main'
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'func-hack4-c2'   # set this to your function app name on Azure
