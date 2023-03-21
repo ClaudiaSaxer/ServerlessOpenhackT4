@@ -1,5 +1,5 @@
 public record Rating(
-    string ratingId,
+    string id,
     string userId,
     string productId,
     string locationName,

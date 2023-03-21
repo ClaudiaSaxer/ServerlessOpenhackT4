@@ -30,9 +30,9 @@ namespace Z.CreateRating
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             [CosmosDB(
         databaseName: "BFYOC",
-        containerName: "%my-container%",
+        containerName: "Ratings",
         Connection  = "CosmosDbConnectionString"
-       )]IAsyncCollector<dynamic> ratings)
+       )]IAsyncCollector<Rating> ratings)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -41,7 +41,7 @@ namespace Z.CreateRating
             var data = JsonConvert.DeserializeObject<CreateRatingDto>(requestBody);
 
             Rating item = new(
-                ratingId: new System.Guid().ToString(),
+                id: System.Guid.NewGuid().ToString(),
                 userId: data.UserId.ToString(),
                 productId: data.ProductId.ToString(),
                 locationName: data.LocationName,
