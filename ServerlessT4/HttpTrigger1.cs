@@ -17,17 +17,18 @@ namespace Z.OpenHack
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            string productId = req.Query["productId"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            productId = productId ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
+            string responseMessage = string.IsNullOrEmpty(productId)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                : $"The product name for your product id {productId} is Starfruit Explosion";
 
             return new OkObjectResult(responseMessage);
         }
