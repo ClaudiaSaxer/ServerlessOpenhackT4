@@ -50,6 +50,11 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: 'Dump Resources'
+      shell: pwsh # For Linux, use bash
+      run: |
+        az resource list
+
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: pwsh # For Linux, use bash
       run: |
