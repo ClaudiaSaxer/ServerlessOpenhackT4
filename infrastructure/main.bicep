@@ -99,14 +99,54 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   }
 }
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: applicationInsightsName
+output functionAppName string = appName
+
+param publisherEmail string = 'info@example.com'
+
+resource workspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+  name: 'log-hack4-${uniqueString(resourceGroup().id)}'
+  location: location
+  properties: {
+    sku: {
+      name: 'Free'
+    }
+  }
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
+  name: 'api-hack4-${uniqueString(resourceGroup().id)}'
   location: location
   kind: 'web'
   properties: {
     Application_Type: 'web'
-    Request_Source: 'rest'
+    WorkspaceResourceId: workspace.id
   }
 }
 
-output functionAppName string = appName
+resource apiManagement 'Microsoft.ApiManagement/service@2022-08-01' = {
+  name: 'apim-hack4-${uniqueString(resourceGroup().id)}'
+  location: location
+  sku: {
+    capacity: 0
+    name: 'Consumption'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    publisherEmail: publisherEmail
+    publisherName: 'OpenHack Team 4'
+  }
+}
+
+resource apiManagementLogger 'Microsoft.ApiManagement/service/loggers@2020-12-01' = {
+  name: applicationInsights.name
+  parent: apiManagement
+  properties: {
+    loggerType: 'applicationInsights'
+    description: 'Logger resources to APIM'
+    credentials: {
+      instrumentationKey: applicationInsights.properties.InstrumentationKey
+    }
+  }
+}
