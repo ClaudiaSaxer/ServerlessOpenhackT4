@@ -8,11 +8,11 @@ on:
   pull_request:
 
 jobs:
-  deploy-http-trigger:
+  build-and-deploy-functions:
     permissions:
       id-token: write
       contents: read
-    name: deploy-http-trigger
+    name: build-and-deploy-functions
     uses: ./.github/workflows/function.yml
     with:
       environment: dev
