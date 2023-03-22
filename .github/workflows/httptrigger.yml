@@ -22,14 +22,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - 'main'
     - 'cicd'
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'func-hack4-c2'   # set this to your function app name on Azure
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './ServerlessT4'       # set this to the path to your function app project, defaults to the repository root
   DOTNET_VERSION: '6.0.x'                   # set this to the dotnet version to use (e.g. '2.1.x', '3.1.x', '5.0.x')
-  AZURE_RESOURCE_GROUP_NAME: ServerlessOpenHackRG04-westeurope'
+  AZURE_RESOURCE_GROUP_NAME: ServerlessOpenHackRG04-westeurope
 
 jobs:
   build-and-deploy:
