@@ -4,10 +4,21 @@ on:
   push:
     branches:
       - "main"
+      - "iac"
   workflow_dispatch:
   pull_request:
 
 jobs:
+  infrastructure:
+    permissions:
+      id-token: write
+      contents: read
+    name: infrastructure
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      environment: dev
+      resource-group-name: ServerlessOpenHackRG04-westeurope-iac
+    secrets: inherit
   build-and-deploy-functions:
     permissions:
       id-token: write
