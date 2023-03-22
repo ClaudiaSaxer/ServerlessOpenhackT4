@@ -28,6 +28,6 @@ jobs:
     with:
       environment: dev
       resource-group-name: ServerlessOpenHackRG04-westeurope
-      app-name: func-hack4-c2
+      app-name: func-hack4-sngvumm4ue4xo
       app-package-path: './ServerlessT4'
     secrets: inherit
