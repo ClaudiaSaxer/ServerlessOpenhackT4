@@ -1,0 +1,19 @@
+name: main
+
+on:
+  push:
+    branches:
+      - "main"
+      - "cicd-template"
+  workflow_dispatch:
+
+jobs:
+  deploy-http-trigger:
+    name: deploy-http-trigger
+    uses: ./.github/workflows/function.yml
+    with:
+      environment: dev
+      resource-group-name: ServerlessOpenHackRG04-westeurope
+      app-name: func-hack4-c2
+      app-package-path: './ServerlessT4'
+    secrets: inherit
