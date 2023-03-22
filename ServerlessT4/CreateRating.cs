@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,14 +52,30 @@ namespace Z.CreateRating
                 userNotes: data.UserNotes,
                 timestamp: DateTime.UtcNow);
 
-            if (string.IsNullOrEmpty(item.userId))
-            {
-                return new OkObjectResult($"Please add a valid UserId: {item.userId}");
-            }
 
-            if (string.IsNullOrEmpty(item.productId))
+
+            using (var httpClient = new HttpClient())
             {
-                return new OkObjectResult($"Please add a valid productId: {item.productId}");
+                var responseUser = await httpClient.GetAsync($"https://serverlessohapi.azurewebsites.net/api/GetUser?userId={item.userId}");
+
+                if (!responseUser.IsSuccessStatusCode)
+                {
+                    return new OkObjectResult($"Please add a valid UserId: {item.userId}");
+                }
+                else
+                {
+                    // success
+                    // var json = await response.Content.ReadAsStringAsync();
+                    // var user = JsonConvert.DeserializeObject<UserDto>(json);
+                }
+
+
+                var responseProduct = await httpClient.GetAsync($"https://serverlessohapi.azurewebsites.net/api/GetProduct?productId={item.productId}");
+
+                if (!responseProduct.IsSuccessStatusCode)
+                {
+                    return new OkObjectResult($"Please add a valid productId: {item.productId}");
+                }
             }
 
             if (item.rating < 0 || item.rating > 5)
@@ -68,6 +86,26 @@ namespace Z.CreateRating
             await ratings.AddAsync(item);
             return new OkObjectResult(item);
         }
+    }
+
+    internal class UserDto
+    {
+        [JsonPropertyName("userId")]
+        public Guid UserId { get; set; }
+        [JsonPropertyName("userName")]
+        public string UserName { get; set; }
+        [JsonPropertyName("fullName")]
+        public string FullName { get; set; }
+    }
+
+    internal class ProductDto
+    {
+        [JsonPropertyName("productId")]
+        public Guid ProductId { get; set; }
+        [JsonPropertyName("productName")]
+        public string ProductName { get; set; }
+        [JsonPropertyName("productDescription")]
+        public string ProductDescription { get; set; }
     }
 }
 
