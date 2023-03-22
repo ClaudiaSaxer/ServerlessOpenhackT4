@@ -31,4 +31,5 @@ jobs:
       resource-group-name: ServerlessOpenHackRG04-westeurope-iac
       app-name: func-hack4-sngvumm4ue4xo
       app-package-path: './ServerlessT4'
+      cosmos-db-name: cosmos-hack4-sngvumm4ue4xo
     secrets: inherit
