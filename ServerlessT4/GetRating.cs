@@ -46,7 +46,7 @@ namespace Z.GetRating
             {
                 string ratingId = req.Query["ratingId"];
                 string responseMessage = $"No data was found for ratingId: {ratingId}";
-                return new OkObjectResult(responseMessage);
+                return new NotFoundObjectResult(responseMessage);
             }
 
             return new OkObjectResult(result);

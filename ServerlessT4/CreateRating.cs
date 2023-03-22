@@ -60,7 +60,7 @@ namespace Z.CreateRating
 
                 if (!responseUser.IsSuccessStatusCode)
                 {
-                    return new OkObjectResult($"Please add a valid UserId: {item.userId}");
+                    return new BadRequestObjectResult($"Please add a valid UserId: {item.userId}");
                 }
                 else
                 {
@@ -74,13 +74,13 @@ namespace Z.CreateRating
 
                 if (!responseProduct.IsSuccessStatusCode)
                 {
-                    return new OkObjectResult($"Please add a valid productId: {item.productId}");
+                    return new BadRequestObjectResult($"Please add a valid productId: {item.productId}");
                 }
             }
 
             if (item.rating < 0 || item.rating > 5)
             {
-                return new OkObjectResult($"Please add a rating from 0-5: {item.rating}");
+                return new BadRequestObjectResult($"Please add a rating from 0-5: {item.rating}");
             }
 
             await ratings.AddAsync(item);
