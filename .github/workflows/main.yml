@@ -20,6 +20,7 @@ jobs:
       resource-group-name: ServerlessOpenHackRG04-westeurope-iac
     secrets: inherit
   build-and-deploy-functions:
+    needs: infrastructure
     permissions:
       id-token: write
       contents: read
