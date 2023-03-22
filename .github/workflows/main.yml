@@ -28,7 +28,7 @@ jobs:
     uses: ./.github/workflows/function.yml
     with:
       environment: dev
-      resource-group-name: ServerlessOpenHackRG04-westeurope
+      resource-group-name: ServerlessOpenHackRG04-westeurope-iac
       app-name: func-hack4-sngvumm4ue4xo
       app-package-path: './ServerlessT4'
     secrets: inherit
