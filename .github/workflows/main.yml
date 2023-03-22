@@ -9,6 +9,9 @@ on:
 
 jobs:
   deploy-http-trigger:
+    permissions:
+      id-token: write
+      contents: read
     name: deploy-http-trigger
     uses: ./.github/workflows/function.yml
     with:
