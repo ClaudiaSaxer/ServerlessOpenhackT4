@@ -25,7 +25,6 @@ param cosmosDbConnectionString string
 
 var functionAppName = appName
 var hostingPlanName = appName
-var applicationInsightsName = replace(appName, '-', '') 
 var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
 var functionWorkerRuntime = runtime
 
