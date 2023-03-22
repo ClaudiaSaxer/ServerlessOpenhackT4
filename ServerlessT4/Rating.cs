@@ -1,7 +1,10 @@
+using System;
+
 public record Rating(
     string id,
     string userId,
     string productId,
     string locationName,
     int rating,
-    string userNotes);
+    string userNotes,
+    DateTime timestamp);

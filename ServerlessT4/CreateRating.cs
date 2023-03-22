@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -46,19 +47,26 @@ namespace Z.CreateRating
                 productId: data.ProductId.ToString(),
                 locationName: data.LocationName,
                 rating: data.Rating,
-                userNotes: data.UserNotes);
+                userNotes: data.UserNotes,
+                timestamp: DateTime.UtcNow);
 
-            if (!string.IsNullOrEmpty(item.userId))
+            if (string.IsNullOrEmpty(item.userId))
             {
-                // Add a JSON document to the output container.
-                await ratings.AddAsync(item);
+                return new OkObjectResult($"Please add a valid UserId: {item.userId}");
             }
 
-            string responseMessage = data?.UserId == System.Guid.Empty
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a zpersonalized response."
-                : $"Hello, {data.UserId}. This HTTP triggered function executed successfully.";
+            if (string.IsNullOrEmpty(item.productId))
+            {
+                return new OkObjectResult($"Please add a valid productId: {item.productId}");
+            }
 
-            return new OkObjectResult(responseMessage);
+            if (item.rating < 0 || item.rating > 5)
+            {
+                return new OkObjectResult($"Please add a rating from 0-5: {item.rating}");
+            }
+
+            await ratings.AddAsync(item);
+            return new OkObjectResult(item);
         }
     }
 }
