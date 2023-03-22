@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -22,27 +24,30 @@ namespace Z.GetRatings
             _logger = log;
         }
 
-        [FunctionName("GetRatings")]
+          [FunctionName("GetRatings")]
         [OpenApiOperation(operationId: "Run", tags: new[] { "Rating" })]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
+        [OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **userId** parameter")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req)
+    public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetRatings/{userId}")] HttpRequest req,
+            [CosmosDB(
+        databaseName: "BFYOC",
+        containerName: "Ratings",
+        Connection  = "CosmosDbConnectionString",
+        SqlQuery = "Select * from r where r.userId = {userId}"
+       )]IEnumerable<Rating> ratings)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            if (ratings.FirstOrDefault() == null)
+            {
+                string userId = req.Query["userId"];
+                string responseMessage = $"No data was found for userId: {userId}";
+                return new OkObjectResult(responseMessage);
+            }
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult(ratings);
         }
     }
 }
