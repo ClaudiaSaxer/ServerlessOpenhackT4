@@ -40,4 +40,4 @@ jobs:
         with:
           resourceGroupName: ${{ inputs.resource-group-name }}
           template: ./infrastructure/main.bicep
-          parameters: cosmosDbConnectionString=${{ secrets.}}
+          parameters: cosmosDbConnectionString=Test
