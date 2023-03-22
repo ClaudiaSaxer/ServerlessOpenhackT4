@@ -20,6 +20,9 @@ param location string = resourceGroup().location
 ])
 param runtime string = 'dotnet'
 
+@secure()
+param cosmosDbConnectionString string
+
 var functionAppName = appName
 var hostingPlanName = appName
 var applicationInsightsName = replace(appName, '-', '') 
@@ -56,6 +59,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     serverFarmId: hostingPlan.id
     siteConfig: {
       appSettings: [
+        {
+          name: 'CosmosDbConnectionString'
+          value: cosmosDbConnectionString
+        }
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
@@ -101,3 +108,5 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
     Request_Source: 'rest'
   }
 }
+
+output functionAppName string = appName
