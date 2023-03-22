@@ -149,3 +149,58 @@ resource apiManagementLogger 'Microsoft.ApiManagement/service/loggers@2020-12-01
     }
   }
 }
+
+resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+  name: 'cosmos-hack4-${uniqueString(resourceGroup().id)}'
+  location: location
+  kind: 'GlobalDocumentDB'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'Session'
+    }
+    databaseAccountOfferType: 'Standard'
+    locations: [
+      {
+        locationName: location
+        failoverPriority: 0
+        isZoneRedundant: false
+      }
+    ]
+  }
+}
+
+var databaseName = 'BFYOC'
+resource database 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-05-15' = {
+  parent: account
+  name: databaseName
+  properties: {
+    resource: {
+      id: databaseName
+    }
+  }
+}
+
+var containerName = 'Ratings'
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2022-05-15' = {
+  parent: database
+  name: containerName
+  properties: {
+    resource: {
+      id: containerName
+      partitionKey: {
+        kind: 'Hash'
+        paths: [
+          '/id'
+        ]
+      }
+    }
+  }
+}
