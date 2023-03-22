@@ -20,9 +20,6 @@ param location string = resourceGroup().location
 ])
 param runtime string = 'dotnet'
 
-@secure()
-param cosmosDbConnectionString string
-
 var functionAppName = appName
 var hostingPlanName = appName
 var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
@@ -60,7 +57,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
       appSettings: [
         {
           name: 'CosmosDbConnectionString'
-          value: cosmosDbConnectionString
+          value: account.listConnectionStrings().connectionStrings[0].connectionString
         }
         {
           name: 'AzureWebJobsStorage'

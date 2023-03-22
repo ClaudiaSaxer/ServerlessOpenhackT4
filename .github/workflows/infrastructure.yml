@@ -13,8 +13,6 @@ on:
     secrets:
       AZURE_CREDENTIALS:
         required: true
-      AZURE_COSMOSDB_CONNECTION_STRING:
-        required: true
 
 permissions:
   id-token: write
@@ -42,4 +40,3 @@ jobs:
         with:
           resourceGroupName: ${{ inputs.resource-group-name }}
           template: ./infrastructure/main.bicep
-          parameters: cosmosDbConnectionString=${{ secrets.AZURE_COSMOSDB_CONNECTION_STRING }}
