@@ -6,6 +6,10 @@ on:
       resource-group-name:
         required: true
         type: string
+      environment:
+        required: false
+        type: string
+        default: dev
     secrets:
       AZURE_CREDENTIALS:
         required: true
