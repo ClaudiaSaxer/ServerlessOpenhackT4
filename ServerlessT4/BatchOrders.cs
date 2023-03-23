@@ -12,6 +12,8 @@ using System.Net;
 using Newtonsoft.Json.Linq;
 using DurableTask.Core.Stats;
 using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.CosmosDB;
+using System.Threading;
 
 namespace Z.BatchOrders
 {
@@ -19,21 +21,38 @@ namespace Z.BatchOrders
     {
         [FunctionName("BatchOrders")]
         public static async Task Run([BlobTrigger("raw/{name}", Connection = "batchblobstorage11c00e_STORAGE")] Stream myBlob, string name, ILogger log,
-                [OrchestrationClient] IDurableOrchestrationClient durableOrchestrationClient
+                [DurableClient] IDurableEntityClient entityClient
 )
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
-            await durableOrchestrationClient.StartNewAsync("YourNewDurableFunction", name);
+
+            var entityId = new EntityId("Counter", "Counter");
+            await entityClient.SignalEntityAsync(entityId, "add", name);
         }
 
-        [FunctionName("YourNewDurableFunction")]
-        public async Task YourNewDurableFunction(
-      [OrchestrationTrigger] IDurableOrchestrationContext orchestrationContext, ILogger logger)
+        [FunctionName("Counter")]
+        public void Counter([EntityTrigger] IDurableEntityContext ctx)
         {
-            var input = orchestrationContext.GetInput<string>();
-            logger.LogInformation($"C# YourNewDurableFunction function Processed blob\n Name:{input}");
-            // Call activity functions here.  
+            var vote = ctx.GetState<string>();
+            switch (ctx.OperationName.ToLowerInvariant())
+            {
+                case "add":
+                    ctx.SetState(vote);
+                    break;
+                case "reset":
+
+                    ctx.SetState(vote);
+                    break;
+                case "get":
+                    ctx.Return(vote);
+                    break;
+                case "delete":
+                    ctx.DeleteState();
+                    break;
+            }
         }
+
+
     }
 
 
