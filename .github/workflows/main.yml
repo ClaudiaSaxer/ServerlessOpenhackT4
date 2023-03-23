@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "main"
-      - "iac"
-      - "iac-modules"
   workflow_dispatch:
   pull_request:
 

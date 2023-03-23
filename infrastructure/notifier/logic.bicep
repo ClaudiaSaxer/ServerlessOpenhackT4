@@ -11,8 +11,6 @@ resource connections_commondataservice_name_resource 'Microsoft.Web/connections@
   location: location
   properties: {
     displayName: 'null'
-    customParameterValues: {
-    }
     nonSecretParameterValues: {
       'token:grantType': 'code'
     }
