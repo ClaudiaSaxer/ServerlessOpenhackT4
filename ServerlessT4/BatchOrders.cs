@@ -33,7 +33,7 @@ namespace Z.BatchOrders
         [FunctionName("Counter")]
         public void Counter([EntityTrigger] IDurableEntityContext ctx)
         {
-            var vote = ctx.GetState<string>();
+            var vote = ctx.GetState<string>(); // does not yet work
             switch (ctx.OperationName.ToLowerInvariant())
             {
                 case "add":
