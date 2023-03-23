@@ -37,7 +37,7 @@ namespace Z.BatchOrders
             var file = ctx.GetInput<string>(); // does not yet work
             var id = file.Split("-")[0];
 
-            Dictionary<string, int> state = (Dictionary<string, int>)(ctx.GetState<object>() ?? new Dictionary<string, int>());
+            Dictionary<string, int> state = ctx.HasState ? ctx.GetState<Dictionary<string, int>>() : new Dictionary<string, int>();
 
             var current = state.ContainsKey(id);
             if (!state.ContainsKey(id))
