@@ -33,29 +33,30 @@ namespace Z.BatchOrders
         [FunctionName("Counter")]
         public void Counter([EntityTrigger] IDurableEntityContext ctx)
         {
-        
-            var vote = ctx.GetInput<string>(); // does not yet work
-            var state = ctx.GetState<string>();
-            switch (ctx.OperationName.ToLowerInvariant())
+
+            var file = ctx.GetInput<string>(); // does not yet work
+            var id = file.Split("-")[0];
+
+            Dictionary<string, int> state = (Dictionary<string, int>)(ctx.GetState<object>() ?? new Dictionary<string, int>());
+
+            var current = state.ContainsKey(id);
+            if (!state.ContainsKey(id))
             {
-                case "add":
-                    ctx.SetState(vote);
-                    break;
-                case "reset":
-
-                    ctx.SetState(vote);
-                    break;
-                case "get":
-                    ctx.Return(vote);
-                    break;
-                case "delete":
-                    ctx.DeleteState();
-                    break;
+                state.Add(id, 1);
+                ctx.SetState(state);
+                return;
             }
+
+            state[id] = state[id] + 1;
+
+            if (state[id] == 3)
+            {
+                // do something
+                state.Remove(id);
+            }
+
+            ctx.SetState(state);
+
         }
-
-
     }
-
-
 }
