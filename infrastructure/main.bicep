@@ -18,10 +18,11 @@ module api 'api/main.bicep' = {
 //   }
 // }
 
-// module batcher 'batcher/main.bicep' = {
-//   name: 'batcher'
-//   params: {
-//     workload: 'batcher'
-//     location: location
-//   }
-// }
+module batcher 'batcher/main.bicep' = {
+  name: 'batcher'
+  params: {
+    workload: 'batcher'
+    location: location
+  }
+}
+
