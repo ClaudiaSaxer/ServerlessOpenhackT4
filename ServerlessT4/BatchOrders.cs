@@ -33,13 +33,13 @@ namespace Z.BatchOrders
         [FunctionName("Counter")]
         public void Counter([EntityTrigger] IDurableEntityContext ctx)
         {
-
             var file = ctx.GetInput<string>(); // does not yet work
             var id = file.Split("-")[0];
 
             Dictionary<string, int> state = ctx.HasState ? ctx.GetState<Dictionary<string, int>>() : new Dictionary<string, int>();
 
             var current = state.ContainsKey(id);
+
             if (!state.ContainsKey(id))
             {
                 state.Add(id, 1);
@@ -56,7 +56,6 @@ namespace Z.BatchOrders
             }
 
             ctx.SetState(state);
-
         }
     }
 }
